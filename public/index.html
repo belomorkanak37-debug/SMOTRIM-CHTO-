@@ -105,8 +105,23 @@ button:focus-visible,.chip:focus-visible,.day:focus-visible{outline:3px dashed v
 
 /* ─── СТАРТОВЫЙ ЭКРАН: облако «Тряхни телефон» ─── */
 .tab-random{position:relative;flex:1;display:flex;flex-direction:column;min-height:0}
-.dots{position:absolute;inset:0;pointer-events:none;z-index:0}
-.dots i{position:absolute;display:block}
+.dots{position:absolute;inset:0;pointer-events:none;z-index:0;overflow:hidden}
+.dots i,.dots svg{
+  position:absolute;left:var(--x);top:-18%;
+  display:block;will-change:transform,opacity;
+  animation:doodleFall var(--dur) linear var(--delay) infinite;
+}
+.dots i{
+  width:var(--d);height:var(--d);border-radius:50%;
+  background:var(--c);
+}
+.dots svg{width:var(--d);height:var(--d)}
+@keyframes doodleFall{
+  0%{transform:translate3d(0,-18vh,0) rotate(0deg);opacity:0}
+  10%{opacity:.95}
+  90%{opacity:.95}
+  100%{transform:translate3d(var(--drift),118vh,0) rotate(var(--rot));opacity:0}
+}
 .shakeArea{position:relative;z-index:1;flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;padding-bottom:30px}
 
 .cloudBtn{
@@ -354,8 +369,25 @@ button:focus-visible,.chip:focus-visible,.day:focus-visible{outline:3px dashed v
 .ibtn.go{background:var(--mint)}
 .ibtn.del{border-style:dashed;border-color:rgba(46,43,77,.5);color:var(--ink-2);box-shadow:none}
 .ibtn:active{transform:translateY(2px);box-shadow:none}
-.lempty{display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center;padding:30px 12px;color:var(--ink-2);font-size:13.5px}
+.lempty{
+  min-height:280px;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:10px;text-align:center;padding:30px 12px;color:var(--ink-2);font-size:13.5px;
+}
 .lempty .big{font-family:var(--font-doodle);font-size:17px;color:var(--ink);line-height:1.35}
+.emptyArt{
+  width:min(43vw,142px);height:auto;display:block;margin:0 auto 2px;
+  overflow:visible;filter:drop-shadow(0 7px 0 rgba(46,43,77,.13));
+}
+.emptyArt .float{animation:emptyFloat 4.4s ease-in-out infinite}
+.emptyArt .twinkle{animation:emptyTwinkle 2.8s ease-in-out infinite;transform-box:fill-box;transform-origin:center}
+@keyframes emptyFloat{
+  0%,100%{transform:translateY(0)}
+  50%{transform:translateY(-7px)}
+}
+@keyframes emptyTwinkle{
+  0%,100%{transform:scale(1);opacity:.75}
+  50%{transform:scale(1.18);opacity:1}
+}
 
 /* ──────────── НИЖНЯЯ НАВИГАЦИЯ ──────────── */
 .nav{
@@ -422,6 +454,7 @@ button:focus-visible,.chip:focus-visible,.day:focus-visible{outline:3px dashed v
 
 @media (prefers-reduced-motion: reduce){
   *,*::before,*::after{animation:none!important;transition:none!important}
+  .dots i,.dots svg{top:var(--still-y)!important;transform:none!important;opacity:.7}
 }
 </style>
 </head>
@@ -1092,27 +1125,31 @@ function shakeEffects(){
   setTimeout(() => spawnSparks(30, 260), 160);
 }
 
-/* ─────────────────── дудл-телевизор (SVG) ───────────────────
-   kind: 'q' — знак вопроса (пустая карточка), 'sleep' — спящий (пустой день) */
-function tvSVG(kind){
-  const face = kind === 'sleep'
-    ? `<path class="ln" d="M44 52 q7 7 14 0"/>
-       <path class="ln" d="M74 52 q7 7 14 0"/>
-       <path class="ln" d="M58 70 q8 5 16 0"/>
-       <text x="112" y="20" font-size="14">z</text>
-       <text x="120" y="10" font-size="18">Z</text>`
-    : `<text x="66" y="68" font-size="36" text-anchor="middle">?</text>
-       <path class="ln" d="M30 38 l5 5 M35 38 l-5 5" opacity=".55"/>`;
+function emptySVG(kind){
+  const watched = kind === 'watched';
+  const accent = watched ? 'var(--mint)' : 'var(--butter)';
+  const side = watched ? 'var(--sky)' : 'var(--rose)';
+  const center = watched
+    ? `<circle cx="80" cy="65" r="23" fill="${accent}" stroke="var(--ink)" stroke-width="3.5"/>
+       <path d="M68 65 l9 9 18-21" fill="none" stroke="var(--ink)" stroke-width="5"
+             stroke-linecap="round" stroke-linejoin="round"/>`
+    : `<path d="M58 35 H102 V90 L80 77 L58 90 Z" fill="${accent}" stroke="var(--ink)"
+             stroke-width="3.5" stroke-linejoin="round"/>
+       <circle cx="80" cy="61" r="17" fill="#fff" stroke="var(--ink)" stroke-width="3"/>
+       <path d="M75 52 L94 61 L75 70 Z" fill="var(--coral)" stroke="var(--ink)"
+             stroke-width="2.5" stroke-linejoin="round"/>`;
   return `
-  <svg class="tv" viewBox="0 0 132 104" aria-hidden="true">
-    <path class="ln" d="M44 22 Q54 8 32 4"/>
-    <path class="ln" d="M84 22 Q76 6 98 3"/>
-    <circle cx="31" cy="4" r="3.5" fill="var(--butter)" stroke="var(--ink)" stroke-width="2.5"/>
-    <circle cx="99" cy="3" r="3.5" fill="var(--rose)" stroke="var(--ink)" stroke-width="2.5"/>
-    <path d="M14 30 C12 24 18 21 24 21 L106 23 C114 23 119 27 118 34 L116 82 C116 89 111 92 104 92 L22 90 C15 90 11 86 12 79 Z"
-          fill="#fff" stroke="var(--ink)" stroke-width="3.5" stroke-linejoin="round"/>
-    <path class="ln" d="M32 92 l-5 9 M98 92 l6 9"/>
-    ${face}
+  <svg class="emptyArt" viewBox="0 0 160 128" aria-hidden="true">
+    <circle class="twinkle" cx="35" cy="31" r="6" fill="var(--butter)" stroke="var(--ink)" stroke-width="2.5"/>
+    <circle class="twinkle" cx="126" cy="33" r="5" fill="${side}" stroke="var(--ink)" stroke-width="2.5"/>
+    <g class="float">
+      <rect x="31" y="21" width="98" height="84" rx="20" fill="#fff" stroke="var(--ink)" stroke-width="3.5"/>
+      <path d="M49 43 H111 M49 89 H111" fill="none" stroke="var(--ink)" stroke-width="2.5"
+            stroke-linecap="round" opacity=".16"/>
+      ${center}
+      <path d="M52 105 h56" fill="none" stroke="var(--ink)" stroke-width="3"
+            stroke-linecap="round" opacity=".28"/>
+    </g>
   </svg>`;
 }
 
@@ -1125,18 +1162,23 @@ function paintDots(){
   const COL = ['var(--lilac-deep)','var(--rose)','var(--sky)','var(--butter)','var(--mint)'];
   const STAR = ['#C9C5F0','#AED4F2','#F6B4C6'];
   let html = '';
-  for (let i = 0; i < 18; i++){
+  for (let i = 0; i < 34; i++){
     const x = (Math.random() * 92 + 4).toFixed(1);
-    const y = (Math.random() * 92 + 4).toFixed(1);
-    if (Math.random() < 0.32){ // дудл-звёздочка
-      const s = (12 + Math.random() * 8).toFixed(0);
+    const y = (Math.random() * 86 + 7).toFixed(1);
+    const dur = (9 + Math.random() * 11).toFixed(1);
+    const delay = (-Math.random() * Number(dur)).toFixed(1);
+    const drift = (Math.random() * 80 - 40).toFixed(0);
+    const rot = (Math.random() * 260 + 120).toFixed(0);
+    const base = `--x:${x}%;--still-y:${y}%;--dur:${dur}s;--delay:${delay}s;--drift:${drift}px;--rot:${rot}deg;`;
+    if (Math.random() < 0.36){ // дудл-звёздочка
+      const s = (12 + Math.random() * 11).toFixed(0);
       const c = rnd(STAR);
-      html += `<svg style="position:absolute;left:${x}%;top:${y}%;width:${s}px;height:${s}px" viewBox="0 0 24 24">
+      html += `<svg style="${base}--d:${s}px" viewBox="0 0 24 24">
         <path d="M12 2 L14.5 9 L22 9 L16 13.5 L18.5 21 L12 16.5 L5.5 21 L8 13.5 L2 9 L9.5 9 Z"
-              fill="none" stroke="${c}" stroke-width="1.8" stroke-linejoin="round"/></svg>`;
+               fill="none" stroke="${c}" stroke-width="1.8" stroke-linejoin="round"/></svg>`;
     } else { // точка
       const d = (4 + Math.random() * 5).toFixed(0);
-      html += `<i style="left:${x}%;top:${y}%;width:${d}px;height:${d}px;border-radius:50%;background:${rnd(COL)}"></i>`;
+      html += `<i style="${base}--d:${d}px;--c:${rnd(COL)}"></i>`;
     }
   }
   box.innerHTML = html;
@@ -1470,7 +1512,7 @@ function renderWatched(){
   if (!n){
     wrap.innerHTML = `
       <div class="lempty">
-        ${tvSVG('q')}
+        ${emptySVG('watched')}
         <div class="big">Пока пусто.</div>
         <div>Жми «Смотрел» в «Рандоме» — тут соберётся твоя коллекция.</div>
       </div>`;
@@ -1542,7 +1584,7 @@ function renderWishlist(){
   if (!n){
     wrap.innerHTML = `
       <div class="lempty">
-        ${tvSVG('q')}
+        ${emptySVG('queue')}
         <div class="big">Очередь пуста.</div>
         <div>Жми «Посмотрю» в «Рандоме» — соберём план на вечера.</div>
       </div>`;

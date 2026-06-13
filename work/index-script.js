@@ -516,27 +516,31 @@ function shakeEffects(){
   setTimeout(() => spawnSparks(30, 260), 160);
 }
 
-/* ─────────────────── дудл-телевизор (SVG) ───────────────────
-   kind: 'q' — знак вопроса (пустая карточка), 'sleep' — спящий (пустой день) */
-function tvSVG(kind){
-  const face = kind === 'sleep'
-    ? `<path class="ln" d="M44 52 q7 7 14 0"/>
-       <path class="ln" d="M74 52 q7 7 14 0"/>
-       <path class="ln" d="M58 70 q8 5 16 0"/>
-       <text x="112" y="20" font-size="14">z</text>
-       <text x="120" y="10" font-size="18">Z</text>`
-    : `<text x="66" y="68" font-size="36" text-anchor="middle">?</text>
-       <path class="ln" d="M30 38 l5 5 M35 38 l-5 5" opacity=".55"/>`;
+function emptySVG(kind){
+  const watched = kind === 'watched';
+  const accent = watched ? 'var(--mint)' : 'var(--butter)';
+  const side = watched ? 'var(--sky)' : 'var(--rose)';
+  const center = watched
+    ? `<circle cx="80" cy="65" r="23" fill="${accent}" stroke="var(--ink)" stroke-width="3.5"/>
+       <path d="M68 65 l9 9 18-21" fill="none" stroke="var(--ink)" stroke-width="5"
+             stroke-linecap="round" stroke-linejoin="round"/>`
+    : `<path d="M58 35 H102 V90 L80 77 L58 90 Z" fill="${accent}" stroke="var(--ink)"
+             stroke-width="3.5" stroke-linejoin="round"/>
+       <circle cx="80" cy="61" r="17" fill="#fff" stroke="var(--ink)" stroke-width="3"/>
+       <path d="M75 52 L94 61 L75 70 Z" fill="var(--coral)" stroke="var(--ink)"
+             stroke-width="2.5" stroke-linejoin="round"/>`;
   return `
-  <svg class="tv" viewBox="0 0 132 104" aria-hidden="true">
-    <path class="ln" d="M44 22 Q54 8 32 4"/>
-    <path class="ln" d="M84 22 Q76 6 98 3"/>
-    <circle cx="31" cy="4" r="3.5" fill="var(--butter)" stroke="var(--ink)" stroke-width="2.5"/>
-    <circle cx="99" cy="3" r="3.5" fill="var(--rose)" stroke="var(--ink)" stroke-width="2.5"/>
-    <path d="M14 30 C12 24 18 21 24 21 L106 23 C114 23 119 27 118 34 L116 82 C116 89 111 92 104 92 L22 90 C15 90 11 86 12 79 Z"
-          fill="#fff" stroke="var(--ink)" stroke-width="3.5" stroke-linejoin="round"/>
-    <path class="ln" d="M32 92 l-5 9 M98 92 l6 9"/>
-    ${face}
+  <svg class="emptyArt" viewBox="0 0 160 128" aria-hidden="true">
+    <circle class="twinkle" cx="35" cy="31" r="6" fill="var(--butter)" stroke="var(--ink)" stroke-width="2.5"/>
+    <circle class="twinkle" cx="126" cy="33" r="5" fill="${side}" stroke="var(--ink)" stroke-width="2.5"/>
+    <g class="float">
+      <rect x="31" y="21" width="98" height="84" rx="20" fill="#fff" stroke="var(--ink)" stroke-width="3.5"/>
+      <path d="M49 43 H111 M49 89 H111" fill="none" stroke="var(--ink)" stroke-width="2.5"
+            stroke-linecap="round" opacity=".16"/>
+      ${center}
+      <path d="M52 105 h56" fill="none" stroke="var(--ink)" stroke-width="3"
+            stroke-linecap="round" opacity=".28"/>
+    </g>
   </svg>`;
 }
 
@@ -549,18 +553,23 @@ function paintDots(){
   const COL = ['var(--lilac-deep)','var(--rose)','var(--sky)','var(--butter)','var(--mint)'];
   const STAR = ['#C9C5F0','#AED4F2','#F6B4C6'];
   let html = '';
-  for (let i = 0; i < 18; i++){
+  for (let i = 0; i < 34; i++){
     const x = (Math.random() * 92 + 4).toFixed(1);
-    const y = (Math.random() * 92 + 4).toFixed(1);
-    if (Math.random() < 0.32){ // дудл-звёздочка
-      const s = (12 + Math.random() * 8).toFixed(0);
+    const y = (Math.random() * 86 + 7).toFixed(1);
+    const dur = (9 + Math.random() * 11).toFixed(1);
+    const delay = (-Math.random() * Number(dur)).toFixed(1);
+    const drift = (Math.random() * 80 - 40).toFixed(0);
+    const rot = (Math.random() * 260 + 120).toFixed(0);
+    const base = `--x:${x}%;--still-y:${y}%;--dur:${dur}s;--delay:${delay}s;--drift:${drift}px;--rot:${rot}deg;`;
+    if (Math.random() < 0.36){ // дудл-звёздочка
+      const s = (12 + Math.random() * 11).toFixed(0);
       const c = rnd(STAR);
-      html += `<svg style="position:absolute;left:${x}%;top:${y}%;width:${s}px;height:${s}px" viewBox="0 0 24 24">
+      html += `<svg style="${base}--d:${s}px" viewBox="0 0 24 24">
         <path d="M12 2 L14.5 9 L22 9 L16 13.5 L18.5 21 L12 16.5 L5.5 21 L8 13.5 L2 9 L9.5 9 Z"
-              fill="none" stroke="${c}" stroke-width="1.8" stroke-linejoin="round"/></svg>`;
+               fill="none" stroke="${c}" stroke-width="1.8" stroke-linejoin="round"/></svg>`;
     } else { // точка
       const d = (4 + Math.random() * 5).toFixed(0);
-      html += `<i style="left:${x}%;top:${y}%;width:${d}px;height:${d}px;border-radius:50%;background:${rnd(COL)}"></i>`;
+      html += `<i style="${base}--d:${d}px;--c:${rnd(COL)}"></i>`;
     }
   }
   box.innerHTML = html;
@@ -894,7 +903,7 @@ function renderWatched(){
   if (!n){
     wrap.innerHTML = `
       <div class="lempty">
-        ${tvSVG('q')}
+        ${emptySVG('watched')}
         <div class="big">Пока пусто.</div>
         <div>Жми «Смотрел» в «Рандоме» — тут соберётся твоя коллекция.</div>
       </div>`;
@@ -966,7 +975,7 @@ function renderWishlist(){
   if (!n){
     wrap.innerHTML = `
       <div class="lempty">
-        ${tvSVG('q')}
+        ${emptySVG('queue')}
         <div class="big">Очередь пуста.</div>
         <div>Жми «Посмотрю» в «Рандоме» — соберём план на вечера.</div>
       </div>`;
