@@ -4,7 +4,10 @@ const path = require('node:path');
 
 const PORT = Number(process.env.PORT || 3000);
 const PUBLIC_DIR = path.join(__dirname, 'public');
+
 const TMDB_ORIGIN = 'https://api.themoviedb.org/3';
+const TMDB_IMG_ORIGIN = 'https://image.tmdb.org/t/p';
+
 const TMDB_KEY = process.env.TMDB_API_KEY || process.env.TMDB_KEY || '';
 
 const MIME = {
@@ -47,10 +50,15 @@ async function proxyTMDB(req, res, url) {
   const upstream = new URL(TMDB_ORIGIN + upstreamPath);
 
   for (const [key, value] of url.searchParams) {
-    if (key.toLowerCase() !== 'api_key') upstream.searchParams.append(key, value);
+    if (key.toLowerCase() !== 'api_key') {
+      upstream.searchParams.append(key, value);
+    }
   }
 
-  const headers = { accept: 'application/json' };
+  const headers = {
+    accept: 'application/json',
+  };
+
   if (TMDB_KEY.startsWith('eyJ')) {
     headers.authorization = `Bearer ${TMDB_KEY}`;
   } else {
@@ -66,15 +74,95 @@ async function proxyTMDB(req, res, url) {
       headers,
       signal: controller.signal,
     });
-    const body = req.method === 'HEAD' ? null : Buffer.from(await upstreamResponse.arrayBuffer());
+
+    const body =
+      req.method === 'HEAD'
+        ? null
+        : Buffer.from(await upstreamResponse.arrayBuffer());
 
     res.writeHead(upstreamResponse.status, {
-      'content-type': upstreamResponse.headers.get('content-type') || 'application/json; charset=utf-8',
+      'content-type':
+        upstreamResponse.headers.get('content-type') ||
+        'application/json; charset=utf-8',
       'cache-control': 'public, max-age=300',
     });
+
     res.end(body);
   } catch (error) {
-    const message = error.name === 'AbortError' ? 'TMDB request timed out' : 'TMDB request failed';
+    const message =
+      error.name === 'AbortError'
+        ? 'TMDB request timed out'
+        : 'TMDB request failed';
+
+    sendJSON(res, 502, { error: message });
+  } finally {
+    clearTimeout(timeout);
+  }
+}
+
+async function proxyTMDBImage(req, res, url) {
+  if (req.method !== 'GET' && req.method !== 'HEAD') {
+    return sendJSON(res, 405, { error: 'Method not allowed' });
+  }
+
+  const match = url.pathname.match(/^\/api\/tmdb-img\/([^/]+)\/(.+)$/);
+
+  if (!match) {
+    return sendJSON(res, 400, { error: 'Bad TMDB image path' });
+  }
+
+  const size = decodeURIComponent(match[1] || '');
+  const imagePath = decodeURIComponent(match[2] || '').replace(/^\/+/, '');
+
+  // Защита: этот роут не должен становиться произвольным прокси.
+  const isValidSize = /^(original|w\d+)$/i.test(size);
+  const isValidPath =
+    imagePath &&
+    !imagePath.includes('..') &&
+    /^[a-z0-9_./-]+$/i.test(imagePath);
+
+  if (!isValidSize || !isValidPath) {
+    return sendJSON(res, 400, { error: 'Bad TMDB image path' });
+  }
+
+  const safeImagePath = imagePath
+    .split('/')
+    .map(encodeURIComponent)
+    .join('/');
+
+  const upstream = `${TMDB_IMG_ORIGIN}/${encodeURIComponent(size)}/${safeImagePath}`;
+
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 12000);
+
+  try {
+    const upstreamResponse = await fetch(upstream, {
+      method: req.method,
+      headers: {
+        accept:
+          'image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8',
+      },
+      signal: controller.signal,
+    });
+
+    const body =
+      req.method === 'HEAD'
+        ? null
+        : Buffer.from(await upstreamResponse.arrayBuffer());
+
+    res.writeHead(upstreamResponse.status, {
+      'content-type':
+        upstreamResponse.headers.get('content-type') || 'image/jpeg',
+      'cache-control': 'public, max-age=604800, immutable',
+    });
+
+    res.end(body);
+  } catch (error) {
+    const message =
+      error.name === 'AbortError'
+        ? 'TMDB image request timed out'
+        : 'TMDB image request failed';
+
     sendJSON(res, 502, { error: message });
   } finally {
     clearTimeout(timeout);
@@ -87,40 +175,57 @@ async function serveStatic(req, res, url) {
   }
 
   let pathname;
+
   try {
     pathname = decodeURIComponent(url.pathname);
   } catch {
     return send(res, 400, 'Bad request');
   }
 
-  if (pathname === '/') pathname = '/index.html';
+  if (pathname === '/') {
+    pathname = '/index.html';
+  }
 
   const target = path.resolve(PUBLIC_DIR, `.${pathname}`);
   const relative = path.relative(PUBLIC_DIR, target);
+
   if (relative.startsWith('..') || path.isAbsolute(relative)) {
     return send(res, 403, 'Forbidden');
   }
 
   try {
     const stat = await fs.stat(target);
-    if (!stat.isFile()) return send(res, 404, 'Not found');
+
+    if (!stat.isFile()) {
+      return send(res, 404, 'Not found');
+    }
 
     const ext = path.extname(target).toLowerCase();
+
     const headers = {
       'content-type': MIME[ext] || 'application/octet-stream',
-      'cache-control': ext === '.html' ? 'no-cache' : 'public, max-age=31536000, immutable',
+      'cache-control':
+        ext === '.html'
+          ? 'no-cache'
+          : 'public, max-age=31536000, immutable',
     };
+
     res.writeHead(200, headers);
-    if (req.method === 'HEAD') return res.end();
+
+    if (req.method === 'HEAD') {
+      return res.end();
+    }
 
     const file = await fs.readFile(target);
     res.end(file);
   } catch {
     const index = await fs.readFile(path.join(PUBLIC_DIR, 'index.html'));
+
     res.writeHead(200, {
       'content-type': MIME['.html'],
       'cache-control': 'no-cache',
     });
+
     res.end(req.method === 'HEAD' ? null : index);
   }
 }
@@ -134,6 +239,13 @@ const server = http.createServer(async (req, res) => {
 
   if (url.pathname === '/api/tmdb' || url.pathname.startsWith('/api/tmdb/')) {
     return proxyTMDB(req, res, url);
+  }
+
+  if (
+    url.pathname === '/api/tmdb-img' ||
+    url.pathname.startsWith('/api/tmdb-img/')
+  ) {
+    return proxyTMDBImage(req, res, url);
   }
 
   return serveStatic(req, res, url);
