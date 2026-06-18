@@ -80,7 +80,59 @@ button:focus-visible,.chip:focus-visible,.day:focus-visible{outline:3px dashed v
 }
 
 /* ──────────── ШАПКА ──────────── */
-.hdr{display:flex;align-items:center;gap:10px;padding:16px 18px 6px}
+.hdr{position:relative;z-index:45;display:flex;align-items:center;gap:10px;padding:16px 18px 6px}
+.trendMenu{position:relative;z-index:46;flex:0 0 auto}
+.trendMenu>summary{list-style:none}
+.trendMenu>summary::-webkit-details-marker{display:none}
+.trendBtn{
+  height:48px;display:inline-flex;align-items:center;gap:8px;padding:0 13px 0 8px;color:var(--ink);
+  background:#fff;border:2.5px solid var(--ink);border-radius:24px 18px 25px 17px / 18px 25px 17px 24px;
+  box-shadow:0 3px 0 rgba(46,43,77,.2);font-family:var(--font-doodle);font-size:14px;line-height:1;
+  cursor:pointer;user-select:none;
+}
+.trendBtn:active{transform:translateY(2px);box-shadow:0 1px 0 rgba(46,43,77,.2)}
+.trendIcon{
+  width:34px;height:34px;display:inline-flex;align-items:center;justify-content:center;
+  background:var(--butter);border:2px solid var(--ink);border-radius:50%;
+  box-shadow:0 2px 0 rgba(46,43,77,.12);
+}
+.trendIcon svg{width:24px;height:24px;filter:drop-shadow(0 1px 0 rgba(46,43,77,.12))}
+.trendLabel{letter-spacing:.01em;white-space:nowrap}
+.trendPanel{
+  display:none;position:absolute;left:0;top:calc(100% + 10px);z-index:60;
+  width:min(410px,calc(100vw - 58px));max-height:min(390px,calc(100dvh - 165px));
+  background:rgba(255,251,238,.97);backdrop-filter:blur(5px);
+  border:2.5px solid var(--ink);border-radius:20px 13px 22px 14px / 13px 22px 14px 20px;
+  box-shadow:0 8px 0 rgba(46,43,77,.15);padding:11px 10px 12px;overflow:hidden;
+}
+.trendPanel::before{
+  content:"";position:absolute;right:14px;top:9px;width:34px;height:24px;opacity:.55;
+  background:radial-gradient(circle at 28% 70%, var(--rose) 0 3px, transparent 4px),
+             radial-gradient(circle at 72% 38%, var(--sky) 0 3px, transparent 4px);
+}
+.trendMenu[open] .trendPanel{display:block;animation:dropPop .18s ease-out both}
+.trendList{
+  position:relative;z-index:1;display:flex;gap:10px;overflow-x:auto;overflow-y:hidden;padding:2px 2px 9px;
+  scroll-snap-type:x proximity;-webkit-overflow-scrolling:touch;scrollbar-width:none;
+}
+.trendList::-webkit-scrollbar{display:none}
+.trendCard{
+  flex:0 0 124px;scroll-snap-align:start;text-align:left;color:var(--ink);background:#fff;
+  border:2.3px solid var(--ink);border-radius:16px 10px 18px 11px / 10px 18px 11px 16px;
+  box-shadow:0 3px 0 rgba(46,43,77,.14);overflow:hidden;position:relative;
+}
+.trendCard:nth-child(even){transform:rotate(.35deg)}
+.trendCard:nth-child(odd){transform:rotate(-.25deg)}
+.trendThumb{display:block;width:100%;aspect-ratio:2/3;background:#fff;border-bottom:2.3px solid var(--ink);overflow:hidden}
+.trendThumb img{width:100%;height:100%;object-fit:cover;display:block}
+.trendBody{display:block;padding:8px 8px 9px}
+.trendTitle{display:block;font-family:var(--font-doodle);font-size:13px;line-height:1.12;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.trendMeta{display:block;margin-top:4px;font-family:var(--font-doodle);font-size:11px;color:var(--ink-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.trendLoading{
+  width:100%;min-height:72px;display:flex;align-items:center;justify-content:center;text-align:center;
+  color:var(--ink-2);font-family:var(--font-doodle);font-size:13.5px;background:rgba(255,255,255,.65);
+  border:2px dashed rgba(46,43,77,.34);border-radius:16px 10px 18px 11px / 10px 18px 11px 16px;
+}
 .gearBtn{
   position:relative;margin-left:auto;flex:0 0 auto;
   width:48px;height:48px;color:var(--ink);
@@ -124,9 +176,8 @@ button:focus-visible,.chip:focus-visible,.day:focus-visible{outline:3px dashed v
 }
 .shakeArea{position:relative;z-index:1;flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:10px;padding:4px 0 28px;min-height:0}
 
-.lastRibbon,.interestingBoard,.moodBoard{width:100%;position:relative;z-index:20}
+.lastRibbon,.moodBoard{width:100%;position:relative;z-index:20}
 .lastRibbon{margin:0 0 2px}
-.interestingBoard{margin-top:auto;padding-bottom:2px;z-index:23}
 .moodBoard{margin-top:0;padding-bottom:8px;z-index:24}
 .dropDown{position:relative;width:100%}
 .dropDown>summary{list-style:none}
@@ -147,8 +198,6 @@ button:focus-visible,.chip:focus-visible,.day:focus-visible{outline:3px dashed v
 .lastDrop[open] .dropArrow::before{content:"⌃"}
 .moodDrop .dropArrow::before{content:"⌃"}
 .moodDrop[open] .dropArrow::before{content:"⌄"}
-.interestingDrop .dropArrow::before{content:"⌃"}
-.interestingDrop[open] .dropArrow::before{content:"⌄"}
 .dropPanel{
   display:none;position:absolute;left:0;right:0;z-index:30;
   background:rgba(255,251,238,.96);backdrop-filter:blur(4px);
@@ -157,9 +206,9 @@ button:focus-visible,.chip:focus-visible,.day:focus-visible{outline:3px dashed v
 }
 .dropDown[open] .dropPanel{display:block;animation:dropPop .18s ease-out both}
 .lastDrop .dropPanel{top:calc(100% + 8px)}
-.moodDrop .dropPanel,.interestingDrop .dropPanel{bottom:calc(100% + 8px)}
+.moodDrop .dropPanel{bottom:calc(100% + 8px)}
 @keyframes dropPop{from{opacity:0;transform:translateY(4px) scale(.98)}to{opacity:1;transform:translateY(0) scale(1)}}
-.moodDrop[open] .dropPanel,.interestingDrop[open] .dropPanel{animation-name:dropPopUp}
+.moodDrop[open] .dropPanel{animation-name:dropPopUp}
 @keyframes dropPopUp{from{opacity:0;transform:translateY(-4px) scale(.98)}to{opacity:1;transform:translateY(0) scale(1)}}
 .historyTrack{
   display:flex;gap:10px;overflow-x:auto;overflow-y:hidden;padding:2px 2px 8px;
@@ -206,30 +255,14 @@ button:focus-visible,.chip:focus-visible,.day:focus-visible{outline:3px dashed v
 .moodName{display:block;position:relative;z-index:1}
 .moodButton.loading{opacity:.72;pointer-events:none}
 .moodButton.loading .moodEmoji{animation:cloudSpin .7s linear infinite}
-.moodButton:active,.historyCard:active,.sectionTitle:active,.interestingButton:active{transform:translateY(2px)!important;box-shadow:none}
-.interestingList{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;width:100%}
-.interestingButton{
-  min-height:44px;display:inline-flex;align-items:center;justify-content:center;gap:7px;text-align:center;color:var(--ink);
-  background:#fff;border:2.3px solid var(--ink);padding:8px 9px 9px;
-  border-radius:17px 12px 19px 11px / 12px 19px 11px 17px;
-  box-shadow:0 3px 0 rgba(46,43,77,.14);position:relative;overflow:visible;
-  font-family:var(--font-doodle);font-size:13.8px;line-height:1.05;white-space:nowrap;
-}
-.interestingButton:nth-child(even){border-radius:12px 19px 11px 17px / 19px 11px 17px 12px;transform:rotate(.25deg)}
-.interestingButton:nth-child(odd){transform:rotate(-.2deg)}
-.interestingButton::before{
-  content:"";position:absolute;left:10px;top:-5px;width:13px;height:10px;background:#fff;
-  border:2.3px solid var(--ink);border-bottom-color:transparent;border-radius:50%;z-index:-1;transform:rotate(-12deg)
-}
-.interestingButton.loading{opacity:.72;pointer-events:none}
-.interestingButton.loading .interestingEmoji{animation:cloudSpin .7s linear infinite}
-.interestingEmoji{font-size:16px;line-height:1}
-
+.moodButton:active,.historyCard:active,.sectionTitle:active,.trendCard:active{transform:translateY(2px)!important;box-shadow:none}
 .cloudBtn{
   position:relative;width:min(86%,330px);aspect-ratio:320/210;
   display:flex;align-items:center;justify-content:center;
   background:none;border:none;animation:cloudFloat 4s ease-in-out infinite;
+  margin-top:auto;top:clamp(20px,3.4dvh,36px);
 }
+@media (max-height:760px){.cloudBtn{top:clamp(14px,2.6dvh,24px)}}
 .cloudShape{position:absolute;inset:0;width:100%;height:100%;
   filter:drop-shadow(0 7px 0 rgba(46,43,77,.16));}
 .cloudText{
@@ -246,7 +279,8 @@ button:focus-visible,.chip:focus-visible,.day:focus-visible{outline:3px dashed v
 @keyframes starTwinkle{0%,100%{transform:translateX(-50%) scale(1) rotate(0)}50%{transform:translateX(-50%) scale(1.14) rotate(12deg)}}
 @keyframes heartBeat{0%,100%{transform:translateX(-50%) scale(1)}50%{transform:translateX(-50%) scale(1.16)}}
 
-.shakeSub{margin-top:16px;max-width:30ch;text-align:center;font-family:var(--font-doodle);font-size:16px;line-height:1.4;color:var(--ink-2)}
+.shakeSub{margin-top:16px;margin-bottom:auto;max-width:30ch;text-align:center;font-family:var(--font-doodle);font-size:16px;line-height:1.4;color:var(--ink-2);position:relative;top:clamp(20px,3.4dvh,36px)}
+@media (max-height:760px){.shakeSub{top:clamp(14px,2.6dvh,24px)}}
 .shakeSub .mark{background:linear-gradient(transparent 60%,var(--lilac) 60%);color:var(--ink)}
 .motion{
   display:block;margin:14px auto 0;font-family:var(--font-doodle);font-size:12.5px;color:var(--ink-2);
@@ -266,13 +300,13 @@ button:focus-visible,.chip:focus-visible,.day:focus-visible{outline:3px dashed v
 }
 
 /* ─── МОДАЛКА РЕЗУЛЬТАТА ─── */
-.resultBackdrop{position:absolute;inset:0;z-index:30;background:rgba(46,43,77,.4);animation:fadeIn .2s ease}
+.resultBackdrop{position:absolute;inset:0;z-index:90;background:rgba(46,43,77,.4);animation:fadeIn .2s ease}
 .resultModal{
-  position:absolute;inset:0;z-index:31;display:flex;flex-direction:column;
+  position:absolute;inset:0;z-index:91;display:flex;flex-direction:column;
   animation:modalUp .34s cubic-bezier(.34,1.4,.64,1);
 }
 .resultClose{
-  position:absolute;top:14px;right:16px;z-index:33;width:44px;height:44px;
+  position:absolute;top:14px;right:16px;z-index:93;width:44px;height:44px;
   font-size:19px;color:var(--ink);background:#fff;
   border:3px solid var(--ink);border-radius:50%;
   box-shadow:0 3px 0 rgba(46,43,77,.2);
@@ -468,13 +502,13 @@ button:focus-visible,.chip:focus-visible,.day:focus-visible{outline:3px dashed v
 
 /* ──────────── ПАНЕЛЬ ФИЛЬТРОВ (оверлей) ──────────── */
 .sheetBackdrop{
-  position:absolute;inset:0;z-index:20;
+  position:absolute;inset:0;z-index:70;
   background:rgba(46,43,77,.34);
   animation:fadeIn .2s ease;
 }
 @keyframes fadeIn{from{opacity:0}}
 .sheet{
-  position:absolute;left:0;right:0;top:0;z-index:21;
+  position:absolute;left:0;right:0;top:0;z-index:71;
   max-height:88%;display:flex;flex-direction:column;
   background:var(--paper);
   background-image:radial-gradient(rgba(46,43,77,.08) 1.2px,transparent 1.3px);
@@ -493,7 +527,7 @@ button:focus-visible,.chip:focus-visible,.day:focus-visible{outline:3px dashed v
 .sheetStatus{font-family:var(--font-doodle);font-size:13.5px;color:var(--ink-2);line-height:1.4;padding:0 18px 8px}
 .sheetStatus b{color:var(--ink)}
 .sheetClose{
-  font-family:var(--font-doodle);font-size:15px;color:var(--ink);
+  position:relative;z-index:72;font-family:var(--font-doodle);font-size:15px;color:var(--ink);
   background:var(--mint);border:2.5px solid var(--ink);
   border-radius:13px 9px 15px 8px / 9px 15px 8px 13px;
   box-shadow:0 3px 0 rgba(46,43,77,.2);padding:8px 16px;
@@ -678,12 +712,12 @@ button:focus-visible,.chip:focus-visible,.day:focus-visible{outline:3px dashed v
   .cloudBtn{animation:cloudFloat 3.5s ease-in-out infinite}
   .cloudStar{animation:starTwinkle 2.1s ease-in-out infinite}
   .cloudHeart{animation:heartBeat 1.9s ease-in-out infinite}
-  .item,.moodButton,.interestingButton,.historyCard{animation:softCardFloat 5.8s ease-in-out infinite}
-  .item:nth-child(even),.moodButton:nth-child(even),.interestingButton:nth-child(even),.historyCard:nth-child(even){animation-delay:-2.1s}
+  .item,.moodButton,.trendCard,.historyCard{animation:softCardFloat 5.8s ease-in-out infinite}
+  .item:nth-child(even),.moodButton:nth-child(even),.trendCard:nth-child(even),.historyCard:nth-child(even){animation-delay:-2.1s}
   .moodButton:nth-child(3n){animation-delay:-3.2s}
 }
 @media (hover:hover){
-  .historyCard:hover,.moodButton:hover,.interestingButton:hover,.item:hover{translate:0 -3px}
+  .historyCard:hover,.moodButton:hover,.trendCard:hover,.item:hover{translate:0 -3px}
   .historyCard:hover img,.ithumb:hover img,.rPoster:hover img{transform:scale(1.08)}
 }
 
@@ -698,6 +732,24 @@ button:focus-visible,.chip:focus-visible,.day:focus-visible{outline:3px dashed v
 
   <!-- Шапка -->
   <header class="hdr">
+    <details class="trendMenu" id="interestingDrop">
+      <summary class="trendBtn" aria-label="Открыть фильмы в тренде">
+        <span class="trendIcon" aria-hidden="true">
+          <svg viewBox="0 0 32 32" fill="none">
+            <path d="M18.5 3 C21 8 17 9.5 22 14 C26 17.8 24.6 26 16 28 C8.5 26.7 6.5 20.3 9.2 15.4 C10.7 12.7 13.1 11.2 13.1 7.7 C15.1 9.2 15.8 11.6 15.4 14 C18 11.6 19.4 8.2 18.5 3 Z"
+                  fill="#F8C9A8" stroke="var(--ink)" stroke-width="2.1" stroke-linejoin="round"/>
+            <path d="M16.2 17 C18 20 15.6 21 18.4 23.4 C19.7 24.5 18.8 26.8 16.1 27.4 C12.9 26.7 12.2 24.1 13.5 22.1 C14.3 20.8 15.5 20 16.2 17 Z"
+                  fill="var(--butter)" stroke="var(--ink)" stroke-width="1.5" stroke-linejoin="round"/>
+          </svg>
+        </span>
+        <span class="trendLabel">В тренде</span>
+      </summary>
+      <div class="trendPanel">
+        <div class="trendList" id="interestingList">
+          <span class="trendLoading">Загружаю фильмы из now-playing TMDB…</span>
+        </div>
+      </div>
+    </details>
     <button class="gearBtn" id="filterBtn" aria-label="Настройки и фильтры" aria-haspopup="dialog">
       <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
         <path d="M12 8.6 A3.4 3.4 0 1 0 12 15.4 A3.4 3.4 0 1 0 12 8.6 Z"
@@ -758,18 +810,6 @@ button:focus-visible,.chip:focus-visible,.day:focus-visible{outline:3px dashed v
         </button>
         <p class="shakeSub"><span class="mark">и получи случайный фильм, сериал, мультфильм или аниме</span></p>
         <button class="motion" id="motionBtn" hidden>📳 включить тряску телефоном</button>
-
-        <section class="interestingBoard" aria-label="Интересное">
-          <details class="dropDown interestingDrop" id="interestingDrop">
-            <summary class="sectionTitle">
-              <span>✨ Интересное</span>
-              <span class="dropArrow" aria-hidden="true"></span>
-            </summary>
-            <div class="dropPanel">
-              <div class="interestingList" id="interestingList"></div>
-            </div>
-          </details>
-        </section>
 
         <section class="moodBoard" aria-label="Подборки под настроение">
           <details class="dropDown moodDrop" id="moodDrop">
@@ -983,24 +1023,14 @@ const IMG_BASE = location.protocol !== 'file:' ? '/api/tmdb-img/' : 'https://ima
 function posterUrl(path, size = 'w342'){
   if (!path) return '';
   const src = String(path).trim();
-
-  // Если TMDB заблокирован у пользователя, не отдаём браузеру прямые ссылки на image.tmdb.org.
-  // На Render картинки забирает server.js и возвращает их через /api/tmdb-img/...
-  if (/^https?:\/\/image\.tmdb\.org\/t\/p\//i.test(src) && location.protocol !== 'file:'){
-    try{
-      const u = new URL(src);
-      const parts = u.pathname.split('/').filter(Boolean); // t / p / w500 / poster.jpg
-      const remoteSize = parts[2] || size;
-      const file = parts.slice(3).join('/');
-      return file ? IMG_BASE + remoteSize + '/' + file : '';
-    } catch (_){ /* ниже сработает обычная логика */ }
-  }
-
   // Поддерживаем TMDB-пути вида /abc.jpg, готовые URL, data-uri и blob из своей базы.
   if (/^(data:|blob:)/i.test(src)) return src;
-  if (/^https?:/i.test(src)) return src;
-  if (src.startsWith('//')) return location.protocol !== 'file:' ? src.replace(/^\/\/image\.tmdb\.org\/t\/p\//i, IMG_BASE) : 'https:' + src;
-  return IMG_BASE + size + (src.startsWith('/') ? src : '/' + src);
+  if (/^https?:\/\/image\.tmdb\.org\/t\/p\//i.test(src)) {
+    const m = src.match(/\/t\/p\/([^/]+)\/(.+)$/i);
+    return m ? IMG_BASE + m[1] + '/' + m[2].replace(/^\/+/, '') : src;
+  }
+  if (/^https?:/i.test(src) || src.startsWith('//')) return src;
+  return IMG_BASE + size + '/' + src.replace(/^\/+/, '');
 }
 function posterLines(text, max = 14, limit = 4){
   const words = String(text || 'Без названия').split(/\s+/).filter(Boolean);
@@ -1449,44 +1479,20 @@ const MOOD_PRESETS = [
   { id:'cozy', emoji:'🧸', title:'Уютно', types:['film','cartoon'], genres:['комедия','романтика','фэнтези','приключения'] },
 ];
 
-const INTERESTING_PRESETS = [
-  { id:'day', emoji:'🎁', title:'Фильм дня' },
-  { id:'trending', emoji:'🔥', title:'В тренде' },
-  { id:'upcoming', emoji:'🍿', title:'Скоро в кино' },
-  { id:'top', emoji:'⭐', title:'Топ рейтинга' },
-];
-
-const tmdbInterestingPages = new Map();
-function daySeed(){
-  const d = new Date();
-  return Number(`${d.getFullYear()}${String(d.getMonth()+1).padStart(2,'0')}${String(d.getDate()).padStart(2,'0')}`);
-}
-function tmdbMovieListUrl(kind, page = 1){
-  const path = kind === 'trending' || kind === 'day'
-    ? '/trending/movie/day'
-    : kind === 'upcoming'
-      ? '/movie/upcoming'
-      : '/movie/top_rated';
+let trendMoviesCache = null;
+function tmdbNowPlayingMoviesUrl(page = 1){
   const p = new URLSearchParams({ language:'ru-RU', page:String(page) });
   if (TMDB_KEY && !TMDB_V4) p.set('api_key', TMDB_KEY);
-  return `${TMDB_BASE}${path}?${p}`;
+  return `${TMDB_BASE}/movie/now_playing?${p}`;
 }
-async function tmdbInteresting(kind){
-  const firstKey = kind || 'trending';
-  let pages = tmdbInterestingPages.get(firstKey);
-  if (pages === undefined){
-    const first = await tmdbJSON(tmdbMovieListUrl(firstKey, 1));
-    pages = Math.min(first.total_pages || 1, firstKey === 'upcoming' ? 8 : 40);
-    tmdbInterestingPages.set(firstKey, pages);
-  }
-  const seed = daySeed();
-  const page = firstKey === 'day' ? (1 + (seed % pages)) : (1 + Math.floor(Math.random() * pages));
-  const data = await tmdbJSON(tmdbMovieListUrl(firstKey, page));
-  let pool = (data.results || []).filter(x => x && x.poster_path);
-  if (!pool.length) pool = (data.results || []).filter(Boolean);
-  if (!pool.length) return null;
-  const picked = firstKey === 'day' ? pool[seed % pool.length] : rnd(pool);
-  return enrichActors(tmdbToTitle(picked, 'film'));
+async function tmdbTrendMovies(limit = 12){
+  if (trendMoviesCache) return trendMoviesCache;
+  const data = await tmdbJSON(tmdbNowPlayingMoviesUrl(1));
+  const raw = (data.results || [])
+    .filter(x => x && x.id && (x.poster_path || x.backdrop_path))
+    .slice(0, limit);
+  trendMoviesCache = await Promise.all(raw.map(x => enrichActors(tmdbToTitle(x, 'film'))));
+  return trendMoviesCache;
 }
 
 /* ───────────────────────── слой данных ─────────────────────────
@@ -1508,9 +1514,9 @@ const DataAPI = {
     if (!TMDB_ENABLED) return [];
     return tmdbSearchActors(query);
   },
-  async getInteresting(kind){
-    if (!TMDB_ENABLED) return null;
-    return tmdbInteresting(kind);
+  async getTrendMovies(){
+    if (!TMDB_ENABLED) return [];
+    return tmdbTrendMovies(12);
   },
 };
 
@@ -1529,6 +1535,7 @@ const state = {
   watched: [],
   wishlist: [],
   rollHistory: [],          // лента последних выпавших тайтлов
+  trendMovies: [],          // карточки верхнего меню «В тренде»
   rejected: new Set(),      // «Не хочу» — исключаются из пула до сброса
 };
 let ALL_TITLES = [];
@@ -1634,50 +1641,44 @@ function renderLastRolls(){
 function renderInteresting(){
   const wrap = $('#interestingList');
   if (!wrap) return;
-  wrap.innerHTML = INTERESTING_PRESETS.map(x => `
-    <button class="interestingButton" data-interesting="${esc(x.id)}" aria-label="Открыть: ${esc(x.title)}">
-      <span class="interestingEmoji">${x.emoji}</span>
-      <span>${esc(x.title)}</span>
-    </button>`).join('');
-}
-function interestingLocalFallback(kind){
-  let pool = ALL_TITLES.filter(t => t.type === 'film' && !state.rejected.has(t.id));
-  if (kind === 'top') pool = pool.filter(t => Number(t.rating || 0) >= 7.5);
-  if (!pool.length) return null;
-  if (kind === 'top') pool.sort((a,b) => Number(b.rating || 0) - Number(a.rating || 0));
-  return kind === 'day' || kind === 'top' ? pool[daySeed() % Math.min(pool.length, 40)] : rnd(pool);
-}
-async function rollInteresting(kind){
-  if (rolling) return;
-  const preset = INTERESTING_PRESETS.find(x => x.id === kind);
-  if (!preset) return;
-  rolling = true;
-  const btn = $(`[data-interesting="${kind}"]`);
-  if (btn){ btn.disabled = true; btn.classList.add('loading'); }
-  shakeEffects();
-  const minSpin = wait(reducedMotion ? 0 : 520);
-  let t = null;
-  try{
-    t = await DataAPI.getInteresting(kind);
-  } catch (err){
-    console.warn('TMDB недоступен для меню Интересное:', err);
-  }
-  if (!t) t = interestingLocalFallback(kind);
-  await minSpin;
-  if (btn){ btn.disabled = false; btn.classList.remove('loading'); }
-  rolling = false;
-  if (!t){
-    toast('Не смог достать подборку из TMDB. Попробуй ещё раз 📡');
+  const list = (state.trendMovies || []).filter(Boolean).slice(0, 12);
+  if (!list.length){
+    wrap.innerHTML = '<span class="trendLoading">Загружаю фильмы из now-playing TMDB…</span>';
     return;
   }
-  showTitle(t);
+  wrap.innerHTML = list.map(t => `
+    <button class="trendCard" data-trend-id="${esc(t.id)}" aria-label="Открыть ${esc(t.title)}">
+      <span class="trendThumb">${miniPoster(t)}</span>
+      <span class="trendBody">
+        <span class="trendTitle">${esc(t.title)}</span>
+        <span class="trendMeta">${esc(compactMeta(t))}</span>
+      </span>
+    </button>`).join('');
+}
+function interestingLocalFallback(){
+  return ALL_TITLES
+    .filter(t => t.type === 'film' && !state.rejected.has(t.id))
+    .sort((a,b) => Number(b.rating || 0) - Number(a.rating || 0))
+    .slice(0, 12);
+}
+async function loadInteresting(){
+  let list = [];
+  try{
+    list = await DataAPI.getTrendMovies();
+  } catch (err){
+    console.warn('TMDB недоступен для меню В тренде:', err);
+  }
+  if (!list || !list.length) list = interestingLocalFallback();
+  state.trendMovies = (list || []).map(normalizeTitle).filter(Boolean).slice(0, 12);
+  renderInteresting();
 }
 function onInterestingClick(e){
-  const btn = e.target.closest('[data-interesting]');
-  if (!btn) return;
-  const box = btn.closest('details');
+  const card = e.target.closest('[data-trend-id]');
+  if (!card) return;
+  const t = (state.trendMovies || []).find(x => x && x.id === card.dataset.trendId);
+  const box = card.closest('details');
   if (box) box.open = false;
-  rollInteresting(btn.dataset.interesting);
+  if (t) showTitle(t);
 }
 
 function renderMoods(){
@@ -1996,7 +1997,7 @@ function renderResult(t){
   const miniLoading = (!t._extrasLoaded && String(t.id || '').startsWith('tmdb-'))
     ? '<div class="rMiniLoading">дорисовываю трейлер и похожее… ✨</div>'
     : '';
-  const likedHtml = renderMiniRail('Зрителям понравилось', '💛', t.liked);
+  const likedHtml = renderMiniRail(`нравится тем, кто смотрел ${t.title}`, '💛', t.liked);
   const similarHtml = renderMiniRail('Похожее', '🧩', t.similar);
 
   // теги: тип (цвет), год (голубой), затем жанры (белые)
@@ -2041,6 +2042,7 @@ function renderResult(t){
 
 /* открыть/закрыть модалку результата */
 function openResult(){
+  closeAllDrops();
   $('#resultBackdrop').hidden = false;
   $('#resultModal').hidden = false;
   $('#resultScroll').scrollTop = 0;
@@ -2167,7 +2169,14 @@ function renderStatus(){
 }
 
 /* ── панель фильтров: открыть/закрыть ── */
+function closeAllDrops(){
+  ['interestingDrop','lastDrop','moodDrop'].forEach(id => {
+    const el = $('#' + id);
+    if (el) el.open = false;
+  });
+}
 function openFilters(){
+  closeAllDrops();
   $('#sheetBackdrop').hidden = false;
   $('#filterSheet').hidden = false;
 }
@@ -2590,6 +2599,7 @@ async function init(){
   paintDots();
   renderLastRolls();
   renderInteresting();
+  loadInteresting();
   renderMoods();
   renderFilterChips();
   renderActorUI();
