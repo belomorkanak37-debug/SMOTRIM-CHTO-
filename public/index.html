@@ -122,17 +122,44 @@ button:focus-visible,.chip:focus-visible,.day:focus-visible{outline:3px dashed v
   90%{opacity:.95}
   100%{transform:translate3d(var(--drift),118vh,0) rotate(var(--rot));opacity:0}
 }
-.shakeArea{position:relative;z-index:1;flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:10px;padding:4px 0 30px;min-height:0}
+.shakeArea{position:relative;z-index:1;flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:10px;padding:4px 0 28px;min-height:0}
 
+.lastRibbon,.moodBoard{width:100%;position:relative;z-index:20}
+.lastRibbon{margin:0 0 2px}
+.moodBoard{margin-top:auto;padding-bottom:8px;z-index:24}
+.dropDown{position:relative;width:100%}
+.dropDown>summary{list-style:none}
+.dropDown>summary::-webkit-details-marker{display:none}
 .sectionTitle{
-  width:100%;display:flex;align-items:center;gap:8px;margin:2px 0 6px;
+  width:100%;display:flex;align-items:center;gap:8px;margin:2px 0 0;
   font-family:var(--font-doodle);font-size:16px;line-height:1.2;color:var(--ink);
+  cursor:pointer;user-select:none;position:relative;z-index:2;
 }
 .sectionTitle::after{content:"";height:2px;flex:1;border-top:2px dashed rgba(46,43,77,.28)}
-.lastRibbon,.moodBoard{width:100%;position:relative;z-index:2}
-.lastRibbon{margin:0 0 2px}
+.dropArrow{
+  flex:0 0 auto;width:26px;height:24px;display:inline-flex;align-items:center;justify-content:center;
+  color:var(--ink);background:#fff;border:2px solid var(--ink);
+  border-radius:13px 9px 14px 10px / 9px 14px 10px 13px;
+  box-shadow:0 2px 0 rgba(46,43,77,.14);font-size:14px;line-height:1;
+}
+.lastDrop .dropArrow::before{content:"⌄"}
+.lastDrop[open] .dropArrow::before{content:"⌃"}
+.moodDrop .dropArrow::before{content:"⌃"}
+.moodDrop[open] .dropArrow::before{content:"⌄"}
+.dropPanel{
+  display:none;position:absolute;left:0;right:0;z-index:30;
+  background:rgba(255,251,238,.96);backdrop-filter:blur(4px);
+  border:2.5px solid var(--ink);box-shadow:0 8px 0 rgba(46,43,77,.14);
+  padding:10px;border-radius:18px 12px 21px 13px / 12px 21px 13px 18px;
+}
+.dropDown[open] .dropPanel{display:block;animation:dropPop .18s ease-out both}
+.lastDrop .dropPanel{top:calc(100% + 8px)}
+.moodDrop .dropPanel{bottom:calc(100% + 8px)}
+@keyframes dropPop{from{opacity:0;transform:translateY(4px) scale(.98)}to{opacity:1;transform:translateY(0) scale(1)}}
+.moodDrop[open] .dropPanel{animation-name:dropPopUp}
+@keyframes dropPopUp{from{opacity:0;transform:translateY(-4px) scale(.98)}to{opacity:1;transform:translateY(0) scale(1)}}
 .historyTrack{
-  display:flex;gap:10px;overflow-x:auto;overflow-y:hidden;padding:2px 2px 10px;
+  display:flex;gap:10px;overflow-x:auto;overflow-y:hidden;padding:2px 2px 8px;
   scroll-snap-type:x proximity;-webkit-overflow-scrolling:touch;scrollbar-width:none;
 }
 .historyTrack::-webkit-scrollbar{display:none}
@@ -157,7 +184,6 @@ button:focus-visible,.chip:focus-visible,.day:focus-visible{outline:3px dashed v
 .historyInfo{min-width:0}
 .historyTitle{display:block;font-family:var(--font-doodle);font-size:13px;line-height:1.15;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .historyMeta{display:block;margin-top:3px;font-family:var(--font-doodle);font-size:11.5px;color:var(--ink-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.moodBoard{margin-top:4px;padding-bottom:4px}
 .moodList{display:flex;flex-wrap:wrap;gap:8px;width:100%;align-items:flex-start}
 .moodButton{
   min-height:0;display:inline-flex;align-items:center;gap:6px;text-align:left;color:var(--ink);
@@ -177,7 +203,7 @@ button:focus-visible,.chip:focus-visible,.day:focus-visible{outline:3px dashed v
 .moodName{display:block;position:relative;z-index:1}
 .moodButton.loading{opacity:.72;pointer-events:none}
 .moodButton.loading .moodEmoji{animation:cloudSpin .7s linear infinite}
-.moodButton:active,.historyCard:active{transform:translateY(2px)!important;box-shadow:none}
+.moodButton:active,.historyCard:active,.sectionTitle:active{transform:translateY(2px)!important;box-shadow:none}
 
 .cloudBtn{
   position:relative;width:min(86%,330px);aspect-ratio:320/210;
@@ -633,8 +659,15 @@ button:focus-visible,.chip:focus-visible,.day:focus-visible{outline:3px dashed v
 
       <div class="shakeArea">
         <section class="lastRibbon" aria-label="Последнее выпавшее">
-          <div class="sectionTitle">🎞 Последнее выпавшее</div>
-          <div class="historyTrack" id="lastRollTrack"></div>
+          <details class="dropDown lastDrop" id="lastDrop">
+            <summary class="sectionTitle">
+              <span>🎞 Последнее выпавшее</span>
+              <span class="dropArrow" aria-hidden="true"></span>
+            </summary>
+            <div class="dropPanel">
+              <div class="historyTrack" id="lastRollTrack"></div>
+            </div>
+          </details>
         </section>
 
         <button class="cloudBtn" id="rollBtn" aria-label="Тряхнуть — получить случайный тайтл">
@@ -669,8 +702,15 @@ button:focus-visible,.chip:focus-visible,.day:focus-visible{outline:3px dashed v
         <button class="motion" id="motionBtn" hidden>📳 включить тряску телефоном</button>
 
         <section class="moodBoard" aria-label="Подборки под настроение">
-          <div class="sectionTitle">🎭 Подборки под настроение</div>
-          <div class="moodList" id="moodList"></div>
+          <details class="dropDown moodDrop" id="moodDrop">
+            <summary class="sectionTitle">
+              <span>🎭 Подборки под настроение</span>
+              <span class="dropArrow" aria-hidden="true"></span>
+            </summary>
+            <div class="dropPanel">
+              <div class="moodList" id="moodList"></div>
+            </div>
+          </details>
         </section>
       </div>
 
@@ -1448,11 +1488,15 @@ async function rollMood(moodId){
 function onMoodClick(e){
   const btn = e.target.closest('[data-mood-roll]');
   if (!btn) return;
+  const box = btn.closest('details');
+  if (box) box.open = false;
   rollMood(btn.dataset.moodRoll);
 }
 function onHistoryClick(e){
   const card = e.target.closest('[data-history-id]');
   if (!card) return;
+  const box = card.closest('details');
+  if (box) box.open = false;
   const t = state.rollHistory.find(x => x.id === card.dataset.historyId);
   if (t) showTitle(t, { remember:false });
 }
