@@ -300,13 +300,13 @@ button:focus-visible,.chip:focus-visible,.day:focus-visible{outline:3px dashed v
 }
 
 /* ─── МОДАЛКА РЕЗУЛЬТАТА ─── */
-.resultBackdrop{position:absolute;inset:0;z-index:30;background:rgba(46,43,77,.4);animation:fadeIn .2s ease}
+.resultBackdrop{position:absolute;inset:0;z-index:90;background:rgba(46,43,77,.4);animation:fadeIn .2s ease}
 .resultModal{
-  position:absolute;inset:0;z-index:31;display:flex;flex-direction:column;
+  position:absolute;inset:0;z-index:91;display:flex;flex-direction:column;
   animation:modalUp .34s cubic-bezier(.34,1.4,.64,1);
 }
 .resultClose{
-  position:absolute;top:14px;right:16px;z-index:33;width:44px;height:44px;
+  position:absolute;top:14px;right:16px;z-index:93;width:44px;height:44px;
   font-size:19px;color:var(--ink);background:#fff;
   border:3px solid var(--ink);border-radius:50%;
   box-shadow:0 3px 0 rgba(46,43,77,.2);
@@ -502,13 +502,13 @@ button:focus-visible,.chip:focus-visible,.day:focus-visible{outline:3px dashed v
 
 /* ──────────── ПАНЕЛЬ ФИЛЬТРОВ (оверлей) ──────────── */
 .sheetBackdrop{
-  position:absolute;inset:0;z-index:20;
+  position:absolute;inset:0;z-index:70;
   background:rgba(46,43,77,.34);
   animation:fadeIn .2s ease;
 }
 @keyframes fadeIn{from{opacity:0}}
 .sheet{
-  position:absolute;left:0;right:0;top:0;z-index:21;
+  position:absolute;left:0;right:0;top:0;z-index:71;
   max-height:88%;display:flex;flex-direction:column;
   background:var(--paper);
   background-image:radial-gradient(rgba(46,43,77,.08) 1.2px,transparent 1.3px);
@@ -527,7 +527,7 @@ button:focus-visible,.chip:focus-visible,.day:focus-visible{outline:3px dashed v
 .sheetStatus{font-family:var(--font-doodle);font-size:13.5px;color:var(--ink-2);line-height:1.4;padding:0 18px 8px}
 .sheetStatus b{color:var(--ink)}
 .sheetClose{
-  font-family:var(--font-doodle);font-size:15px;color:var(--ink);
+  position:relative;z-index:72;font-family:var(--font-doodle);font-size:15px;color:var(--ink);
   background:var(--mint);border:2.5px solid var(--ink);
   border-radius:13px 9px 15px 8px / 9px 15px 8px 13px;
   box-shadow:0 3px 0 rgba(46,43,77,.2);padding:8px 16px;
@@ -1993,7 +1993,7 @@ function renderResult(t){
   const miniLoading = (!t._extrasLoaded && String(t.id || '').startsWith('tmdb-'))
     ? '<div class="rMiniLoading">дорисовываю трейлер и похожее… ✨</div>'
     : '';
-  const likedHtml = renderMiniRail(`НРАВИТСЯ ТЕМ, КТО СМОТРЕЛ «${t.title}»`, '💛', t.liked);
+  const likedHtml = renderMiniRail(`нравится тем, кто смотрел ${t.title}`, '💛', t.liked);
   const similarHtml = renderMiniRail('Похожее', '🧩', t.similar);
 
   // теги: тип (цвет), год (голубой), затем жанры (белые)
@@ -2038,6 +2038,7 @@ function renderResult(t){
 
 /* открыть/закрыть модалку результата */
 function openResult(){
+  closeAllDrops();
   $('#resultBackdrop').hidden = false;
   $('#resultModal').hidden = false;
   $('#resultScroll').scrollTop = 0;
@@ -2164,7 +2165,14 @@ function renderStatus(){
 }
 
 /* ── панель фильтров: открыть/закрыть ── */
+function closeAllDrops(){
+  ['interestingDrop','lastDrop','moodDrop'].forEach(id => {
+    const el = $('#' + id);
+    if (el) el.open = false;
+  });
+}
 function openFilters(){
+  closeAllDrops();
   $('#sheetBackdrop').hidden = false;
   $('#filterSheet').hidden = false;
 }
