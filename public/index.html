@@ -122,7 +122,70 @@ button:focus-visible,.chip:focus-visible,.day:focus-visible{outline:3px dashed v
   90%{opacity:.95}
   100%{transform:translate3d(var(--drift),118vh,0) rotate(var(--rot));opacity:0}
 }
-.shakeArea{position:relative;z-index:1;flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;padding-bottom:30px}
+.shakeArea{position:relative;z-index:1;flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:10px;padding:4px 0 30px;min-height:0}
+
+.sectionTitle{
+  width:100%;display:flex;align-items:center;gap:8px;margin:2px 0 6px;
+  font-family:var(--font-doodle);font-size:16px;line-height:1.2;color:var(--ink);
+}
+.sectionTitle::after{content:"";height:2px;flex:1;border-top:2px dashed rgba(46,43,77,.28)}
+.lastRibbon,.moodBoard{width:100%;position:relative;z-index:2}
+.lastRibbon{margin:0 0 2px}
+.historyTrack,.moodCards{
+  display:flex;gap:10px;overflow-x:auto;overflow-y:hidden;padding:2px 2px 10px;
+  scroll-snap-type:x proximity;-webkit-overflow-scrolling:touch;scrollbar-width:none;
+}
+.historyTrack::-webkit-scrollbar,.moodCards::-webkit-scrollbar{display:none}
+.historyEmpty{
+  width:100%;min-height:54px;display:flex;align-items:center;justify-content:center;text-align:center;
+  color:var(--ink-2);font-size:13px;background:rgba(255,255,255,.68);
+  border:2px dashed rgba(46,43,77,.35);border-radius:15px 10px 17px 9px / 10px 17px 9px 15px;
+}
+.historyCard{
+  flex:0 0 164px;scroll-snap-align:start;display:grid;grid-template-columns:38px 1fr;gap:8px;align-items:center;
+  min-height:62px;padding:8px;background:#fff;border:2.5px solid var(--ink);color:var(--ink);
+  border-radius:15px 10px 17px 9px / 10px 17px 9px 15px;box-shadow:0 3px 0 rgba(46,43,77,.15);
+  text-align:left;
+}
+.historyCard:nth-child(even){transform:rotate(.45deg)}
+.historyCard:nth-child(odd){transform:rotate(-.35deg)}
+.historyThumb{
+  width:38px;height:52px;position:relative;overflow:hidden;background:#fff;border:2px solid var(--ink);
+  border-radius:8px 5px 9px 6px / 5px 9px 6px 8px;
+}
+.historyThumb img{width:100%;height:100%;object-fit:cover;display:block}
+.historyInfo{min-width:0}
+.historyTitle{display:block;font-family:var(--font-doodle);font-size:13px;line-height:1.15;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.historyMeta{display:block;margin-top:3px;font-family:var(--font-doodle);font-size:11.5px;color:var(--ink-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.moodBoard{margin-top:4px;padding-bottom:4px}
+.moodList{display:flex;flex-direction:column;gap:12px;width:100%}
+.moodGroup{
+  background:rgba(255,255,255,.72);border:2.5px solid rgba(46,43,77,.72);
+  border-radius:20px 14px 22px 12px / 14px 22px 12px 20px;
+  padding:10px 10px 8px;box-shadow:0 4px 0 rgba(46,43,77,.12);
+}
+.moodGroup:nth-child(even){border-radius:14px 22px 12px 20px / 22px 12px 20px 14px}
+.moodHead{display:flex;align-items:center;gap:9px;margin-bottom:8px}
+.moodEmoji{font-size:22px;line-height:1}
+.moodName{font-family:var(--font-doodle);font-size:16px;line-height:1.1}
+.moodNote{margin-left:auto;font-size:12px;color:var(--ink-2);white-space:nowrap}
+.moodRoll{
+  margin-left:4px;padding:6px 9px;font-family:var(--font-doodle);font-size:12px;color:var(--ink);
+  background:var(--butter);border:2px solid var(--ink);border-radius:12px 8px 14px 9px / 8px 14px 9px 12px;
+  box-shadow:0 2px 0 rgba(46,43,77,.16);
+}
+.moodRoll:active,.historyCard:active,.moodCard:active{transform:translateY(2px)!important;box-shadow:none}
+.moodCard{
+  flex:0 0 122px;scroll-snap-align:start;text-align:left;color:var(--ink);
+  background:#fff;border:2.5px solid var(--ink);border-radius:15px 9px 17px 10px / 9px 17px 10px 15px;
+  box-shadow:0 3px 0 rgba(46,43,77,.15);overflow:hidden;
+}
+.moodCard:nth-child(even){transform:rotate(.5deg)}
+.moodPoster{position:relative;width:100%;aspect-ratio:2/3;background:#fff;overflow:hidden;border-bottom:2.5px solid var(--ink)}
+.moodPoster img{width:100%;height:100%;object-fit:cover;display:block}
+.moodBody{padding:8px 8px 9px}
+.moodTitle{display:block;font-family:var(--font-doodle);font-size:13px;line-height:1.12;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.moodMeta{display:block;margin-top:4px;font-family:var(--font-doodle);font-size:11px;color:var(--ink-2)}
 
 .cloudBtn{
   position:relative;width:min(86%,330px);aspect-ratio:320/210;
@@ -196,6 +259,8 @@ button:focus-visible,.chip:focus-visible,.day:focus-visible{outline:3px dashed v
   box-shadow:0 8px 0 rgba(46,43,77,.16);transform:rotate(-1deg);
 }
 .rPoster img{width:100%;height:100%;object-fit:cover;display:block}
+.posterImg{transform-origin:center;animation:posterAlive 13s ease-in-out infinite alternate}
+.rPoster{animation:posterCardFloat 5.5s ease-in-out infinite}
 .rPoster .pph{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;
   font-family:var(--font-doodle);font-size:13px;color:var(--ink-2);
   background:repeating-linear-gradient(45deg,#fff,#fff 9px,#F2EEE2 9px,#F2EEE2 18px)}
@@ -220,6 +285,14 @@ button:focus-visible,.chip:focus-visible,.day:focus-visible{outline:3px dashed v
 .rOrig{font-size:14px;color:var(--ink-2);margin-top:4px;line-height:1.3}
 .rMeta{font-family:var(--font-doodle);font-size:14px;color:var(--ink-2);margin-top:4px}
 .rMeta .star{color:#E0A200}
+
+.actors{
+  margin-top:9px;padding:9px 11px;background:#FFFDF2;border:2px dashed rgba(46,43,77,.38);
+  border-radius:13px 17px 12px 18px / 17px 12px 18px 13px;
+  font-size:13.5px;line-height:1.35;color:var(--ink-2);
+}
+.actors b{font-family:var(--font-doodle);font-size:14px;color:var(--ink)}
+.iactors{font-size:12.5px;line-height:1.3;color:var(--ink-2);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 
 /* теги-таблетки */
 .tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
@@ -471,7 +544,34 @@ button:focus-visible,.chip:focus-visible,.day:focus-visible{outline:3px dashed v
   100%{transform:translate(calc(-50% + var(--tx)),calc(-50% + var(--ty))) scale(.85) rotate(var(--rr));opacity:0}
 }
 
-@media (prefers-reduced-motion: reduce){
+@keyframes posterAlive{
+  0%{transform:scale(1) translate3d(0,0,0)}
+  100%{transform:scale(1.045) translate3d(0,-7px,0)}
+}
+@keyframes posterCardFloat{
+  0%,100%{transform:rotate(-1deg) translateY(0)}
+  50%{transform:rotate(-.45deg) translateY(-5px)}
+}
+@keyframes softCardFloat{
+  0%,100%{translate:0 0}
+  50%{translate:0 -4px}
+}
+@media (min-width:740px){
+  .cloudBtn{animation:cloudFloat 3.5s ease-in-out infinite}
+  .cloudStar{animation:starTwinkle 2.1s ease-in-out infinite}
+  .cloudHeart{animation:heartBeat 1.9s ease-in-out infinite}
+  .item,.moodGroup,.historyCard{animation:softCardFloat 5.8s ease-in-out infinite}
+  .item:nth-child(even),.moodGroup:nth-child(even),.historyCard:nth-child(even){animation-delay:-2.1s}
+  .moodCard{animation:softCardFloat 6.4s ease-in-out infinite}
+  .moodCard:nth-child(2){animation-delay:-1.5s}
+  .moodCard:nth-child(3){animation-delay:-3s}
+}
+@media (hover:hover){
+  .historyCard:hover,.moodCard:hover,.item:hover{translate:0 -3px}
+  .historyCard:hover img,.moodCard:hover img,.ithumb:hover img,.rPoster:hover img{transform:scale(1.08)}
+}
+
+@media (prefers-reduced-motion: reduce) and (pointer:coarse){
   *,*::before,*::after{animation:none!important;transition:none!important}
   .dots i,.dots svg{top:var(--still-y)!important;transform:none!important;opacity:.7}
 }
@@ -500,6 +600,11 @@ button:focus-visible,.chip:focus-visible,.day:focus-visible{outline:3px dashed v
       <div class="dots" id="dotsRandom" aria-hidden="true"></div>
 
       <div class="shakeArea">
+        <section class="lastRibbon" aria-label="Последнее выпавшее">
+          <div class="sectionTitle">🎞 Последнее выпавшее</div>
+          <div class="historyTrack" id="lastRollTrack"></div>
+        </section>
+
         <button class="cloudBtn" id="rollBtn" aria-label="Тряхнуть — получить случайный тайтл">
           <svg class="cloudStar" viewBox="0 0 40 40" aria-hidden="true">
             <path d="M20 4 L24 15 L36 15 L26 22 L30 34 L20 26 L10 34 L14 22 L4 15 L16 15 Z"
@@ -530,6 +635,11 @@ button:focus-visible,.chip:focus-visible,.day:focus-visible{outline:3px dashed v
         </button>
         <p class="shakeSub"><span class="mark">и получи случайный фильм, сериал, мультфильм или аниме</span></p>
         <button class="motion" id="motionBtn" hidden>📳 включить тряску телефоном</button>
+
+        <section class="moodBoard" aria-label="Подборки под настроение">
+          <div class="sectionTitle">🎭 Подборки под настроение</div>
+          <div class="moodList" id="moodList"></div>
+        </section>
       </div>
 
       <div class="sparks" id="sparks"></div>
@@ -672,7 +782,8 @@ function plural(n, one, few, many){
   return many;
 }
 
-const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+const desktopMotion = window.matchMedia('(hover:hover) and (pointer:fine)').matches;
+const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches && !desktopMotion;
 
 /* ───────────────────────── справочники ───────────────────────── */
 const TYPES = {
@@ -875,6 +986,38 @@ async function tmdbJSON(url){
   return r.json();
 }
 
+
+function tmdbRawId(t){
+  if (t.tmdbId) return t.tmdbId;
+  const m = String(t.id || '').match(/^tmdb-[^-]+-(\d+)$/);
+  return m ? m[1] : null;
+}
+function tmdbCreditsUrl(type, id){
+  const isTV = type === 'series' || type === 'anime';
+  const p = new URLSearchParams({ language:'ru-RU' });
+  if (TMDB_KEY && !TMDB_V4) p.set('api_key', TMDB_KEY);
+  return `${TMDB_BASE}/${isTV ? 'tv' : 'movie'}/${id}/credits?${p}`;
+}
+async function tmdbActors(type, id){
+  if (!id || !TMDB_ENABLED) return [];
+  try{
+    const data = await tmdbJSON(tmdbCreditsUrl(type, id));
+    return (data.cast || [])
+      .map(x => x && x.name)
+      .filter(Boolean)
+      .slice(0, 5);
+  } catch (err){
+    console.warn('Не удалось загрузить актёров TMDB:', err);
+    return [];
+  }
+}
+async function enrichActors(t){
+  if (!t || (Array.isArray(t.actors) && t.actors.length)) return t;
+  const id = tmdbRawId(t);
+  if (!id || !String(t.id || '').startsWith('tmdb-')) return { ...t, actors: [] };
+  return { ...t, actors: await tmdbActors(t.type, id) };
+}
+
 // ответ TMDB → формат карточки приложения
 function tmdbToTitle(x, type){
   const date = x.release_date || x.first_air_date || '';
@@ -885,6 +1028,7 @@ function tmdbToTitle(x, type){
                countries.some(c => RU_COUNTRIES.includes(c));
   return {
     id: 'tmdb-' + type + '-' + x.id,
+    tmdbId: x.id,
     type,
     title: x.title || x.name || x.original_title || x.original_name || 'Без названия',
     year: Number(date.slice(0, 4)) || '????',
@@ -893,6 +1037,7 @@ function tmdbToTitle(x, type){
     poster: x.poster_path || x.backdrop_path || null, // постер TMDB; если нет — берём фон как запас
     origin: isRu ? 'ru' : 'foreign',
     desc: x.overview || 'Русское описание ещё не подвезли. Загадка — тоже жанр.',
+    actors: [],
   };
 }
 
@@ -921,11 +1066,11 @@ async function tmdbRandom(types, genres, origin, era){
     if (!results.length) continue;
     backup = backup || rnd(results);
     const withRealPoster = results.filter(x => x.poster_path);
-    if (withRealPoster.length) return tmdbToTitle(rnd(withRealPoster), type);
+    if (withRealPoster.length) return enrichActors(tmdbToTitle(rnd(withRealPoster), type));
     const withBackdrop = results.filter(x => x.backdrop_path);
-    if (withBackdrop.length && attempt > 4) return tmdbToTitle(rnd(withBackdrop), type);
+    if (withBackdrop.length && attempt > 4) return enrichActors(tmdbToTitle(rnd(withBackdrop), type));
   }
-  return backup ? tmdbToTitle(backup, type) : null;
+  return backup ? enrichActors(tmdbToTitle(backup, type)) : null;
 }
 
 /* ─────────────────── ОФЛАЙН-БАЗА (заглушка) ───────────────────
@@ -943,6 +1088,7 @@ async function tmdbRandom(types, genres, origin, era){
      poster:  '/path.jpg' | null,   // путь TMDB или URL вашей картинки, либо null
      origin:  'ru' | 'foreign',     // для фильтра «Откуда»
      desc:    'Короткое описание.',
+     actors:  ['Актёр 1','Актёр 2'], // необязательно: покажем в карточке
    }
 
    Как подключить вашу базу:
@@ -950,6 +1096,58 @@ async function tmdbRandom(types, genres, origin, era){
      - с диска/сети: верните данные из DataAPI.getTitles()
        (например, await fetch('/db.json') или чтение из SQLite в Capacitor). */
 const OFFLINE_TITLES = []; // ← сюда ляжет ваша офлайн-база
+
+
+const MOOD_COLLECTIONS = [
+  {
+    id:'cry', emoji:'😭', title:'Поплакать', note:'трогательно',
+    items:[
+      { id:'mood-green-mile', type:'film', title:'Зелёная миля', year:1999, genres:['драма','фэнтези'], rating:8.6, poster:null, origin:'foreign', desc:'История тюремного блока, где чудо и жестокость стоят совсем рядом.', actors:['Том Хэнкс','Майкл Кларк Дункан','Дэвид Морс'] },
+      { id:'mood-hachiko', type:'film', title:'Хатико: Самый верный друг', year:2009, genres:['драма'], rating:8.1, poster:null, origin:'foreign', desc:'Очень тёплый и болезненно нежный фильм о верности, которую невозможно забыть.', actors:['Ричард Гир','Джоан Аллен','Сара Ремер'] },
+      { id:'mood-eternal-sunshine', type:'film', title:'Вечное сияние чистого разума', year:2004, genres:['романтика','драма','фантастика'], rating:8.1, poster:null, origin:'foreign', desc:'Любовь, память и желание стереть боль — с шансом снова выбрать друг друга.', actors:['Джим Керри','Кейт Уинслет','Кирстен Данст'] },
+    ],
+  },
+  {
+    id:'laugh', emoji:'😂', title:'Посмеяться', note:'легче дышать',
+    items:[
+      { id:'mood-intouchables', type:'film', title:'1+1', year:2011, genres:['комедия','драма'], rating:8.5, poster:null, origin:'foreign', desc:'Дружба двух очень разных людей, после которой хочется жить смелее и смеяться громче.', actors:['Франсуа Клюзе','Омар Си','Анн Ле Ни'] },
+      { id:'mood-spy', type:'film', title:'Шпион', year:2015, genres:['комедия','боевик'], rating:7.0, poster:null, origin:'foreign', desc:'Абсурдный шпионский экшен с отличным темпом и самоиронией.', actors:['Мелисса Маккарти','Джейсон Стэйтем','Роуз Бирн'] },
+      { id:'mood-snatch', type:'film', title:'Большой куш', year:2000, genres:['комедия','боевик'], rating:7.8, poster:null, origin:'foreign', desc:'Криминальная карусель, быстрые диалоги и хаос, который работает как часы.', actors:['Джейсон Стэйтем','Брэд Питт','Стивен Грэм'] },
+    ],
+  },
+  {
+    id:'scare', emoji:'😱', title:'Испугаться', note:'свет не выключать',
+    items:[
+      { id:'mood-shining', type:'film', title:'Сияние', year:1980, genres:['ужасы','драма'], rating:8.2, poster:null, origin:'foreign', desc:'Медленное безумие в пустом отеле, где тишина пугает сильнее крика.', actors:['Джек Николсон','Шелли Дювалл','Дэнни Ллойд'] },
+      { id:'mood-conjuring', type:'film', title:'Заклятие', year:2013, genres:['ужасы'], rating:7.5, poster:null, origin:'foreign', desc:'Классический дом с тайной, липкое напряжение и много поводов спрятаться под плед.', actors:['Вера Фармига','Патрик Уилсон','Лили Тейлор'] },
+      { id:'mood-get-out', type:'film', title:'Прочь', year:2017, genres:['ужасы','детектив'], rating:7.7, poster:null, origin:'foreign', desc:'Социальный триллер, где неловкость постепенно превращается в настоящий кошмар.', actors:['Дэниел Калуя','Эллисон Уильямс','Кэтрин Кинер'] },
+    ],
+  },
+  {
+    id:'inspire', emoji:'🔥', title:'Вдохновиться', note:'после — в бой',
+    items:[
+      { id:'mood-shawshank', type:'film', title:'Побег из Шоушенка', year:1994, genres:['драма'], rating:8.7, poster:null, origin:'foreign', desc:'Про надежду, достоинство и долгую дорогу к свободе.', actors:['Тим Роббинс','Морган Фриман','Боб Гантон'] },
+      { id:'mood-forrest-gump', type:'film', title:'Форрест Гамп', year:1994, genres:['драма','романтика'], rating:8.5, poster:null, origin:'foreign', desc:'Большая жизнь простого человека, который проходит через историю с открытым сердцем.', actors:['Том Хэнкс','Робин Райт','Гэри Синиз'] },
+      { id:'mood-soul', type:'cartoon', title:'Душа', year:2020, genres:['фэнтези','драма','комедия'], rating:8.0, poster:null, origin:'foreign', desc:'Мультфильм о смысле, радости маленьких вещей и праве не быть идеальным.', actors:['Джейми Фокс','Тина Фей','Грэм Нортон'] },
+    ],
+  },
+  {
+    id:'think', emoji:'🧠', title:'Подумать', note:'вау-идеи',
+    items:[
+      { id:'mood-interstellar', type:'film', title:'Интерстеллар', year:2014, genres:['фантастика','драма','приключения'], rating:8.4, poster:null, origin:'foreign', desc:'Космос, время, семья и выбор, который ощущается больше одной жизни.', actors:['Мэттью Макконахи','Энн Хэтэуэй','Джессика Честейн'] },
+      { id:'mood-inception', type:'film', title:'Начало', year:2010, genres:['фантастика','боевик','детектив'], rating:8.4, poster:null, origin:'foreign', desc:'Многоуровневый сон-ограбление, после которого спорят о финале.', actors:['Леонардо ДиКаприо','Джозеф Гордон-Левитт','Эллиот Пейдж'] },
+      { id:'mood-arrival', type:'film', title:'Прибытие', year:2016, genres:['фантастика','драма'], rating:7.9, poster:null, origin:'foreign', desc:'Тихая фантастика о языке, времени и том, как мы понимаем друг друга.', actors:['Эми Адамс','Джереми Реннер','Форест Уитакер'] },
+    ],
+  },
+  {
+    id:'cozy', emoji:'🧸', title:'Уютно залипнуть', note:'плед + чай',
+    items:[
+      { id:'mood-amelie', type:'film', title:'Амели', year:2001, genres:['романтика','комедия'], rating:8.0, poster:null, origin:'foreign', desc:'Причудливая, добрая история о маленьких чудесах и смелости быть заметной.', actors:['Одри Тоту','Матьё Кассовиц','Рюфюс'] },
+      { id:'mood-grand-budapest', type:'film', title:'Отель «Гранд Будапешт»', year:2014, genres:['комедия','приключения'], rating:8.0, poster:null, origin:'foreign', desc:'Пастельная авантюра с идеальным ритмом, странностями и фирменным юмором.', actors:['Рэйф Файнс','Тони Револори','Сирша Ронан'] },
+      { id:'mood-ratatouille', type:'cartoon', title:'Рататуй', year:2007, genres:['комедия','приключения'], rating:8.0, poster:null, origin:'foreign', desc:'Про вкус, талант и дерзкую мысль, что творить может каждый.', actors:['Пэттон Освальт','Иэн Холм','Лу Романо'] },
+    ],
+  },
+];
 
 /* ───────────────────────── слой данных ─────────────────────────
    Единственное место, которое знает, ОТКУДА берутся данные. */
@@ -979,6 +1177,7 @@ const state = {
   //   wishlist: { t:<тайтл> }
   watched: [],
   wishlist: [],
+  rollHistory: [],          // лента последних выпавших тайтлов
   rejected: new Set(),      // «Не хочу» — исключаются из пула до сброса
 };
 let ALL_TITLES = [];
@@ -992,7 +1191,7 @@ const LS_KEY = 'chpzrt.lists.v1';
 function saveLists(){
   try {
     localStorage.setItem(LS_KEY, JSON.stringify({
-      watched: state.watched, wishlist: state.wishlist,
+      watched: state.watched, wishlist: state.wishlist, rollHistory: state.rollHistory,
     }));
   } catch (e){ /* приватный режим — переживём, просто не сохранится */ }
 }
@@ -1004,7 +1203,116 @@ function loadLists(){
     if (Array.isArray(d.watched)) state.watched = d.watched.map(x =>
       ({ t: x.t, stars: x.stars || 0, note: x.note || '' }));
     if (Array.isArray(d.wishlist)) state.wishlist = d.wishlist.map(x => ({ t: x.t }));
+    if (Array.isArray(d.rollHistory)) state.rollHistory = d.rollHistory.map(normalizeTitle).filter(Boolean).slice(0, 8);
   } catch (e){ /* битые данные — игнор */ }
+}
+
+
+function titleActors(t, limit = 5){
+  return (Array.isArray(t && t.actors) ? t.actors : [])
+    .map(a => String(a || '').trim())
+    .filter(Boolean)
+    .slice(0, limit);
+}
+function normalizeTitle(t){
+  if (!t || !t.id || !t.title) return null;
+  return {
+    ...t,
+    genres: Array.isArray(t.genres) ? t.genres : [],
+    actors: titleActors(t, 5),
+  };
+}
+function cloneTitle(t){
+  const n = normalizeTitle(t);
+  return n ? JSON.parse(JSON.stringify(n)) : null;
+}
+function showTitle(t, { remember = true } = {}){
+  const normalized = cloneTitle(t);
+  if (!normalized) return;
+  state.current = normalized;
+  if (remember) pushHistory(normalized);
+  renderResult(normalized);
+  openResult();
+  spawnSparks(16);
+}
+function pushHistory(t){
+  const normalized = cloneTitle(t);
+  if (!normalized) return;
+  state.rollHistory = [
+    normalized,
+    ...state.rollHistory.filter(x => x.id !== normalized.id),
+  ].slice(0, 8);
+  saveLists();
+  renderLastRolls();
+}
+function compactMeta(t){
+  const tp = TYPES[t.type] || TYPES.film;
+  return `${tp.emoji} ${t.year || '—'} · ★ ${Number(t.rating || 0).toFixed(1)}`;
+}
+function miniPoster(t){
+  return posterInner(t, 'w154');
+}
+function renderLastRolls(){
+  const wrap = $('#lastRollTrack');
+  if (!wrap) return;
+  if (!state.rollHistory.length){
+    wrap.innerHTML = '<span class="historyEmpty">Пока ничего не выпадало. Жми облако — и тут появится лента 🎲</span>';
+    return;
+  }
+  wrap.innerHTML = state.rollHistory.map(t => `
+    <button class="historyCard" data-history-id="${esc(t.id)}" aria-label="Открыть ${esc(t.title)}">
+      <span class="historyThumb">${miniPoster(t)}</span>
+      <span class="historyInfo">
+        <span class="historyTitle">${esc(t.title)}</span>
+        <span class="historyMeta">${esc(compactMeta(t))}</span>
+      </span>
+    </button>`).join('');
+}
+function renderMoods(){
+  const wrap = $('#moodList');
+  if (!wrap) return;
+  wrap.innerHTML = MOOD_COLLECTIONS.map(mood => `
+    <article class="moodGroup" data-mood="${mood.id}">
+      <div class="moodHead">
+        <span class="moodEmoji">${mood.emoji}</span>
+        <strong class="moodName">${esc(mood.title)}</strong>
+        <span class="moodNote">${esc(mood.note)}</span>
+        <button class="moodRoll" data-mood-roll="${mood.id}">🎲</button>
+      </div>
+      <div class="moodCards">
+        ${mood.items.map(t => `
+          <button class="moodCard" data-mood-id="${mood.id}" data-title-id="${esc(t.id)}">
+            <span class="moodPoster">${miniPoster(t)}</span>
+            <span class="moodBody">
+              <span class="moodTitle">${esc(t.title)}</span>
+              <span class="moodMeta">${esc(compactMeta(t))}</span>
+            </span>
+          </button>`).join('')}
+      </div>
+    </article>`).join('');
+}
+function findMoodTitle(moodId, titleId){
+  const mood = MOOD_COLLECTIONS.find(m => m.id === moodId);
+  if (!mood) return null;
+  return titleId ? mood.items.find(t => t.id === titleId) : rnd(mood.items);
+}
+function onMoodClick(e){
+  const rollBtn = e.target.closest('[data-mood-roll]');
+  if (rollBtn){
+    const t = findMoodTitle(rollBtn.dataset.moodRoll);
+    if (t) showTitle(t);
+    return;
+  }
+  const card = e.target.closest('[data-title-id]');
+  if (!card) return;
+  const t = findMoodTitle(card.dataset.moodId, card.dataset.titleId);
+  if (t) showTitle(t);
+}
+function onHistoryClick(e){
+  const card = e.target.closest('[data-history-id]');
+  if (!card) return;
+  const t = state.rollHistory.find(x => x.id === card.dataset.historyId);
+  if (t) showTitle(t, { remember:false });
 }
 
 /* ───────────────────────── тост ───────────────────────── */
@@ -1194,6 +1502,10 @@ function renderResult(t){
        src="${esc(posterSrc || posterFallback)}" data-fallback="${esc(posterFallback)}"
        alt="Постер: ${esc(t.title)}" loading="eager" decoding="async"
        onerror="this.onerror=null;this.src=this.dataset.fallback;this.classList.add('generated');this.parentNode.classList.add('generated')">`;
+  const actors = titleActors(t);
+  const actorsHtml = actors.length
+    ? `<div class="actors"><b>Актёры:</b> ${actors.map(esc).join(', ')}</div>`
+    : '';
 
   // теги: тип (цвет), год (голубой), затем жанры (белые)
   const tags = [
@@ -1219,6 +1531,7 @@ function renderResult(t){
       <a class="rTitle" href="${googleHref(t)}" target="_blank" rel="noopener"
       >${esc(t.title)} <span class="ext">↗</span></a>
       <div class="rMeta">• ${yearTxt} · <span class="star">★</span> ${Number(t.rating).toFixed(1)}</div>
+      ${actorsHtml}
       <div class="tags">${tags}</div>
       <p class="rDesc">${esc(t.desc)}</p>
       <div class="acts">
@@ -1308,11 +1621,8 @@ async function roll(){
   }
 
   await minSpin;
-  state.current = t;
   cloud.classList.remove('rattle');
-  renderResult(t);
-  openResult();          // выезжает модалка с тайтлом
-  spawnSparks(16);       // лёгкая волна при появлении результата
+  showTitle(t);          // выезжает модалка с тайтлом + обновляет ленту
   rolling = false;
 }
 
@@ -1501,6 +1811,12 @@ function itemMeta(t){
   return `<div class="imeta">${tp.emoji} ${tp.low} · ${t.year} · ★ ${Number(t.rating).toFixed(1)}</div>`;
 }
 
+
+function itemActors(t){
+  const actors = titleActors(t, 3);
+  return actors.length ? `<div class="iactors">🎭 ${actors.map(esc).join(', ')}</div>` : '';
+}
+
 /* ── «Просмотрено»: звёзды + заметка ── */
 function renderWatched(){
   const wrap = $('#watchedList');
@@ -1523,6 +1839,7 @@ function renderWatched(){
       <div class="ibody">
         ${itemTitle(en.t)}
         ${itemMeta(en.t)}
+        ${itemActors(en.t)}
         <div class="stars" aria-label="Твоя оценка">
           ${[1,2,3,4,5].map(v =>
             `<button class="${v <= en.stars ? 'on' : ''}" data-star="${v}"
@@ -1595,6 +1912,7 @@ function renderWishlist(){
       <div class="ibody">
         ${itemTitle(en.t)}
         ${itemMeta(en.t)}
+        ${itemActors(en.t)}
         <p class="idesc">${esc(en.t.desc)}</p>
         <div class="irow">
           <button class="ibtn go" data-done>✓ Посмотрел</button>
@@ -1659,11 +1977,15 @@ async function init(){
 
   // первый рендер
   paintDots();
+  renderLastRolls();
+  renderMoods();
   renderFilterChips();
   renderStatus();
 
   // события — «Рандом»
   $('#rollBtn').addEventListener('click', roll);
+  $('#lastRollTrack').addEventListener('click', onHistoryClick);
+  $('#moodList').addEventListener('click', onMoodClick);
   $('#resultScroll').addEventListener('click', onCardAction);
   $('#resultClose').addEventListener('click', closeResult);
   $('#resultBackdrop').addEventListener('click', closeResult);
